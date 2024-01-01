@@ -16,7 +16,7 @@ pygame.time.wait(1000)
 s.shuffle()
 
 #pygame.time.wait(500)
-#s.randSortSwaps(200)
+#s.randSortSwaps(2000)
 
 #s.minishuffle(20)
 #s.minishuffle(100)
@@ -25,6 +25,7 @@ s.shuffle()
 
 pygame.time.wait(1000)
 
+#s.heapRuns()
 #s.sortRuns()
 #s.sortRunsInversions()
 #pygame.time.wait(1000)
@@ -33,14 +34,24 @@ pygame.time.wait(1000)
 #s.selectionSort()
 #s.doubleSelectionSort()
 
+#s.shuffleSort()
+
 #s.flipSort()
 #s.flipExchangeSort()
 #s.bubbleFlipSort()
 #s.bubbleFlipExchangeSort()
 
+#s.comb(1.3,50)
+
+#s.heapSort()
+s.adaptiveHeapSort()
+
+#s.bigbubblesort()
+#s.bigbubbleExchangesort()
+#s.bigbubbleExchangesort2()
+
 #s.bubbleSort()
 #s.tribubbleSort()
-#s.bigbubblesort()
 #s.bigbubblemergeSort()
 #s.megabubblesort()
 #s.gigabubbleSort()
@@ -54,7 +65,10 @@ pygame.time.wait(1000)
 
 #s.insertionSort()
 
-s.shellsort()
+#s.oddMergeSort()
+#s.oddMergeSort2()
+
+#s.shellsort()
 #s.shellsort2()
 #s.shellsort23()
 #s.bubbleShellsort()

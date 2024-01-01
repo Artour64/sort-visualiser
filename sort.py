@@ -1,5 +1,6 @@
 import random
 import pygame
+import math
 
 import config as co
 import render as r
@@ -88,6 +89,300 @@ def reverse():
 	global listLen
 	for c in range(int(listLen/2)):
 		swap(c,listLen-1-c)
+
+def sortReverse():
+	global ar
+	global listLen
+	for c in range(int(listLen/2)):
+		r.drawComps(c,listLen-1-c)
+		if ar[c] > ar[listLen-1-c]:
+			swap(c,listLen-1-c)
+
+def sortReverseBackwards():
+	global ar
+	global listLen
+	for c in range(int(listLen/2)):
+		r.drawComps(c,listLen-1-c)
+		if ar[c] < ar[listLen-1-c]:
+			swap(c,listLen-1-c)
+
+def checkSorted():
+	global ar
+	global listLen
+	for c in range(listLen-1):
+		r.drawComps(c,c+1)
+		if ar[c] > ar[c+1]:
+			return False
+	return True
+
+def heapRuns():
+	global ar
+	global listLen
+	global arAux
+	global arAux2
+	
+	#make heap
+	for c in range(1,listLen):
+		i = c
+		while i > 0:
+			p = math.floor((i-1) / 2)
+			r.drawComps(i,p)
+			if ar[p] < ar[i]:
+				swap(i,p)
+				i = p
+			else:
+				break
+	
+	n = 0;
+	
+	for c in range(listLen):
+		arAux2[c] = False
+	
+	for c in range(listLen):
+		if arAux2[c]:
+			continue
+		i = c
+		while i < listLen:
+			r.drawComps(i)
+			arAux[n] = ar[i]
+			arAux2[i] = True
+			n += 1
+			i = (i*2) + 1
+	
+	for c in range(listLen):
+		ar[c] = arAux[c]
+		r.drawWrites(c)
+		
+	reverse()
+	
+	
+
+def heapSort():
+	global ar
+	global listLen
+	
+	#make heap
+	for c in range(1,listLen):
+		i = c
+		while i > 0:
+			p = math.floor((i-1) / 2)
+			r.drawComps(i,p)
+			if ar[p] < ar[i]:
+				swap(i,p)
+				i = p
+			else:
+				break
+	
+	#pop heap
+	for c in reversed(range(1,listLen)):
+		swap(0,c)
+		r.drawDone(c)
+		pygame.display.update()
+		i = 0
+		while i < c:
+			bigChild = (i*2) + 1
+			if bigChild >= c:
+				break
+			if bigChild + 1 < c:
+				r.drawComps(bigChild,bigChild+1)
+				if ar[bigChild] < ar[bigChild + 1]:
+					bigChild += 1
+			r.drawComps(i,bigChild)
+			if ar[bigChild] > ar[i]:
+				swap(i,bigChild)
+				i = bigChild
+			else:
+				break
+	
+	#last element mark
+	if listLen > 0:	
+		r.drawDone(0)
+		pygame.display.update()
+	
+def adaptiveHeapSort():
+	sortReverse()
+	comb(1.3,2)
+	sortReverseBackwards()
+	heapSort()			
+
+def shuffleSort():
+	global ar
+	global listLen
+	while not checkSorted():
+		for c in range(listLen):
+			i=randInd()
+			if i!=c:
+				r.drawComps(i,c)
+				if i > c and ar[i] < ar[c]:
+					swap(i,c)
+				elif i < c and ar[i] > ar[c]:
+					swap(i,c)
+	for c in range(listLen):
+		r.drawDone(c)
+	pygame.display.update()
+
+def oddMergeSort(topInd=None,doneVis=True):
+	global ar
+	global listLen
+	
+	
+	if topInd == None:
+		topInd=listLen-1
+	if topInd > 0:
+		lastSwap=0
+		compInd=0
+		
+		swapped = list()
+		dropped = list()
+		
+		for c in range(topInd):
+			r.drawComps(compInd,c+1)
+			if ar[compInd] > ar[c+1]:
+				swapped.append(ar[c+1])
+				lastSwap=c
+			else:
+				dropped.append(ar[compInd])
+				compInd=c+1
+		
+		dropped.append(ar[compInd])
+		
+		for c, v in enumerate(swapped):
+			ar[c] = v
+			r.drawWrites(c)
+		
+		sLen = len(swapped)
+		for i, v in enumerate(dropped):
+			c = i + sLen
+			ar[c] = v
+			r.drawWrites(c)
+		
+		if doneVis:
+			for c in range(lastSwap+1,topInd+1):
+				r.drawDone(c)
+			pygame.display.update()
+		topInd=lastSwap
+		
+		oddMergeSort(sLen-1,False)
+		
+		merged = list()
+		
+		i1 = 0
+		i2 = sLen
+		while i1 < sLen and i2 < topInd+1:
+			r.drawComps(i1,i2)
+			if ar[i1] < ar[i2]:
+				merged.append(ar[i1])
+				i1 += 1
+			else:
+				merged.append(ar[i2])
+				i2 += 1
+		if i1 < sLen:
+			for c in range(i1,sLen):
+				r.drawComps(c)
+				merged.append(ar[c])
+		else:#i2 < topInd+1
+			for c in range(i2,topInd+1):
+				r.drawComps(c)
+				merged.append(ar[c])
+		
+		for c,v in enumerate(merged):
+			ar[c] = v
+			r.drawWrites(c)
+		
+	
+		if doneVis:
+			for c in range(topInd+1):
+				r.drawDone(c)
+			pygame.display.update()
+
+def oddMergeSort2(topInd=None,doneVis=True):
+	global ar
+	global listLen
+	topInd=listLen-1
+	passes = 0
+	if topInd == None:
+		topInd=listLen-1
+	if topInd > 0:
+		passes+=1
+		write=0
+		
+		r.drawComps(0,topInd)
+		if ar[0] > ar[topInd]:
+			swap(0,topInd)
+		
+		bubble = [ar[0]]
+		dropped = []
+		
+		for c in range(1,topInd):
+			r.drawComps(c)
+			if bubble[-1] > ar[c]:
+				if bubble[0] >= ar[c]:
+					ar[write] = ar[c]
+					r.drawWrites(write)
+					write +=1
+				else:
+					i=0
+					while bubble[i] < ar[c]:
+						dropped.append(bubble[i])
+						i += 1
+					bubble[i-1] = ar[c]
+					bubble = bubble[i-1:]
+			else:
+				r.drawComps(c,topInd)
+				if ar[c] > ar[topInd]:
+					bubble.append(ar[topInd])
+					ar[topInd] = ar[c]
+				else:
+					bubble.append(ar[c])
+		
+		sLen = write
+		#maybe change to pseudo merge?
+		for c in dropped:
+			ar[write] = c
+			r.drawWrites(write)
+			write += 1
+			
+		w=write
+		for c in bubble:
+			ar[write] = c
+			r.drawWrites(write)
+			write += 1
+		
+		if doneVis:
+			for c in range(w,topInd+1):
+				r.drawDone(c)
+			pygame.display.update()
+		
+		oddMergeSort(sLen-1,False)
+		
+		merged = list()
+		i1 = 0
+		i2 = sLen
+		while i1 < sLen and i2 < topInd+1:
+			r.drawComps(i1,i2)
+			if ar[i1] < ar[i2]:
+				merged.append(ar[i1])
+				i1 += 1
+			else:
+				merged.append(ar[i2])
+				i2 += 1
+		if i1 < sLen:
+			for c in range(i1,sLen):
+				r.drawComps(c)
+				merged.append(ar[c])
+		else:#i2 < topInd+1
+			for c in range(i2,topInd+1):
+				r.drawComps(c)
+				merged.append(ar[c])
+		
+		for c,v in enumerate(merged):
+			ar[c] = v
+			r.drawWrites(c)
+	
+	if doneVis:
+		for c in range(topInd+1):
+			r.drawDone(c)
+		pygame.display.update()
 		
 def bubbleSort():
 	global ar
@@ -133,6 +428,123 @@ def tribubbleSort():
 		r.drawDone(c)
 	pygame.display.update()
 	
+def bigbubbleExchangesort():
+	global ar
+	global listLen
+	topInd=listLen-1
+	passes = 0
+	while topInd > 0:
+		passes+=1
+		write=0
+		
+		r.drawComps(0,topInd)
+		if ar[0] > ar[topInd]:
+			swap(0,topInd)
+		
+		bubble = [ar[0]]
+		
+		for c in range(1,topInd):
+			r.drawComps(c)
+			if bubble[-1] > ar[c]:
+				if bubble[0] >= ar[c]:
+					ar[write] = ar[c]
+					r.drawWrites(write)
+					write +=1
+				else:
+					i=0
+					while bubble[i] < ar[c]:
+						ar[write] = bubble[i]
+						r.drawWrites(write)
+						write += 1
+						i += 1
+					bubble[i-1] = ar[c]
+					bubble = bubble[i-1:]
+			else:
+				r.drawComps(c,topInd)
+				if ar[c] > ar[topInd]:
+					bubble.append(ar[topInd])
+					ar[topInd] = ar[c]
+				else:
+					bubble.append(ar[c])
+		w=write
+		for c in bubble:
+			ar[write] = c
+			r.drawWrites(write)
+			write += 1
+		
+		print(len(bubble))
+		for c in range(w,topInd+1):
+			r.drawDone(c)
+		pygame.display.update()
+		topInd=w-1
+	
+	for c in range(topInd+1):
+		r.drawDone(c)
+	pygame.display.update()
+	print("passes:"+str(passes))
+
+	
+def bigbubbleExchangesort2():
+	global ar
+	global listLen
+	topInd=listLen-1
+	passes = 0
+	while topInd > 0:
+		passes+=1
+		write=0
+		
+		r.drawComps(0,topInd)
+		if ar[0] > ar[topInd]:
+			swap(0,topInd)
+		
+		bubble = [ar[0]]
+		dropped = []
+		
+		for c in range(1,topInd):
+			r.drawComps(c)
+			if bubble[-1] > ar[c]:
+				if bubble[0] >= ar[c]:
+					ar[write] = ar[c]
+					r.drawWrites(write)
+					write +=1
+				else:
+					i=0
+					while bubble[i] < ar[c]:
+						dropped.append(bubble[i])
+						i += 1
+					bubble[i-1] = ar[c]
+					bubble = bubble[i-1:]
+			else:
+				r.drawComps(c,topInd)
+				if ar[c] > ar[topInd]:
+					bubble.append(ar[topInd])
+					ar[topInd] = ar[c]
+				else:
+					bubble.append(ar[c])
+		
+		#maybe change to pseudo merge?
+		for c in dropped:
+			ar[write] = c
+			r.drawWrites(write)
+			write += 1
+			
+		w=write
+		for c in bubble:
+			ar[write] = c
+			r.drawWrites(write)
+			write += 1
+		
+		print(len(bubble))
+		for c in range(w,topInd+1):
+			r.drawDone(c)
+		pygame.display.update()
+		topInd=w-1
+	
+	for c in range(topInd+1):
+		r.drawDone(c)
+	pygame.display.update()
+	print("passes:"+str(passes))
+	
 def bigbubblesort():
 	global ar
 	global arAux
@@ -173,6 +585,7 @@ def bigbubblesort():
 			r.drawWrites(arInd)
 			arInd+=1
 		
+		print(topInd-topInd2)
 		for c in range(topInd2,topInd):
 			r.drawDone(c)
 		pygame.display.update()
@@ -182,7 +595,7 @@ def bigbubblesort():
 	for c in range(topInd+1):
 		r.drawDone(c)
 	pygame.display.update()
-	print(passes)
+	print("passes:"+str(passes))
 
 #not done
 def megabubblesort():
@@ -476,7 +889,7 @@ def bigbubblemergeSort():
 	topInd=listLen
 	passes=0
 	while topInd > 1:
-		sortRunsInversions(topInd)
+		#sortRunsInversions(topInd)
 		passes +=1
 		arInd=0
 		top=Node(ar[0])
@@ -1070,6 +1483,8 @@ def bubbleExchangeSort():
 		r.drawDone(c)
 	pygame.display.update()
 	
+
+	
 def bubbleExchangePullSort():#sometimes wrong at the end
 	global ar
 	global listLen
@@ -1168,6 +1583,24 @@ def cocktailShakerSort():
 	for c in range(lowInd, topInd+1):
 		r.drawDone(c)
 	pygame.display.update()
+	
+def comb(gapFactor=1.3,stopGapFactor=5):
+	global ar
+	global listLen
+	
+	gapStart = listLen - 1
+	gap = gapStart
+	currentGapFactor = 1
+	stopGap = max(1, gapStart / stopGapFactor)
+	
+	while gap >= stopGap:
+		for c in range(listLen-gap):
+			r.drawComps(c,c+gap)
+			if ar[c] > ar[c+gap]:
+				swap(c,c+gap)
+		currentGapFactor *= gapFactor
+		gap=round(gapStart/currentGapFactor)
+	
 
 def combSort():
 	gapFactor=1.3
