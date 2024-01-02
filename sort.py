@@ -203,7 +203,350 @@ def adaptiveHeapSort():
 	sortReverse()
 	comb(1.3,2)
 	sortReverseBackwards()
-	heapSort()			
+	heapSort()
+
+def quickSortMiddlePivot(start=0,end=None):
+	if end == None:
+		end = listLen - 1;
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	pivot = math.floor((start+end)/2)
+	
+	below = 0
+	for c in range(start,end+1):
+		r.drawComps(c,pivot)
+		if ar[c] < ar[pivot]:
+			below += 1
+	pivot2 = start + below
+	swap(pivot,pivot2)
+	#r.drawDone(pivot2)
+	#pygame.display.update()
+	
+	n = pivot2 + 1
+	c = start
+	while c < pivot2:
+		r.drawComps(c,pivot2)
+		if ar[c] > ar[pivot2]:
+			r.drawComps(n,pivot2)
+			while ar[n] > ar[pivot2]:
+				n += 1
+			swap(c,n)
+			n += 1
+			if n > end:
+				break
+		c += 1
+	
+	r.drawDone(pivot2)
+	pygame.display.update()
+		
+	quickSortMiddlePivot(start,pivot2-1)
+	quickSortMiddlePivot(pivot2+1,end)
+
+def quickSortMedian3Pivot(start=0,end=None):
+	if end == None:
+		end = listLen - 1;
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	pivot = math.floor((start+end)/2)
+	sort3(pivot-1,pivot,pivot+1)
+	if end - start == 2:
+		r.drawDone(start)
+		r.drawDone(start+1)
+		r.drawDone(end)
+		pygame.display.update()
+		return
+	
+	below = 0
+	for c in range(start,end+1):
+		r.drawComps(c,pivot)
+		if ar[c] < ar[pivot]:
+			below += 1
+	pivot2 = start + below
+	swap(pivot,pivot2)
+	#r.drawDone(pivot2)
+	#pygame.display.update()
+	
+	n = pivot2 + 1
+	c = start
+	while c < pivot2:
+		r.drawComps(c,pivot2)
+		if ar[c] > ar[pivot2]:
+			r.drawComps(n,pivot2)
+			while ar[n] > ar[pivot2]:
+				n += 1
+			swap(c,n)
+			n += 1
+			if n > end:
+				break
+		c += 1
+	
+	r.drawDone(pivot2)
+	pygame.display.update()
+		
+	quickSortMedian3Pivot(start,pivot2-1)
+	quickSortMedian3Pivot(pivot2+1,end)
+
+
+def quickCombSortMedian3Pivot(combStrength=2, start=0, end=None):
+	if end == None:
+		end = listLen - 1;
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	if end - start > 2:
+		combRange(start, end, 1.3, combStrength)
+	
+	pivot = math.floor((start+end)/2)
+	sort3(pivot-1,pivot,pivot+1)
+	if end - start == 2:
+		r.drawDone(start)
+		r.drawDone(start+1)
+		r.drawDone(end)
+		pygame.display.update()
+		return
+	
+	
+	
+	below = 0
+	for c in range(start,end+1):
+		r.drawComps(c,pivot)
+		if ar[c] < ar[pivot]:
+			below += 1
+	pivot2 = start + below
+	swap(pivot,pivot2)
+	#r.drawDone(pivot2)
+	#pygame.display.update()
+	
+	n = pivot2 + 1
+	c = start
+	while c < pivot2:
+		r.drawComps(c,pivot2)
+		if ar[c] > ar[pivot2]:
+			r.drawComps(n,pivot2)
+			while ar[n] > ar[pivot2]:
+				n += 1
+			swap(c,n)
+			n += 1
+			if n > end:
+				break
+		c += 1
+	
+	r.drawDone(pivot2)
+	pygame.display.update()
+		
+	quickCombSortMedian3Pivot(combStrength,start,pivot2-1)
+	quickCombSortMedian3Pivot(combStrength,pivot2+1,end)
+
+def quickSortBestOf3Pivot(start=0,end=None):
+	if end == None:
+		end = listLen - 1;
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	pivot = math.floor((start+end)/2)
+	sort3(pivot-1,pivot,pivot+1)
+	if end - start == 2:
+		r.drawDone(start)
+		r.drawDone(start+1)
+		r.drawDone(end)
+		pygame.display.update()
+		return
+	
+	below = 0
+	for c in range(start,end+1):
+		r.drawComps(c,pivot)
+		if ar[c] < ar[pivot]:
+			below += 1
+	
+	pivot2 = start + below
+	
+	retry = False
+	if pivot2 < pivot:
+		retry = True
+		pivot3 = pivot + 1
+	elif pivot2 > pivot:
+		retry = True
+		pivot3 = pivot - 1
+	
+	if retry:
+		below = 0
+		for c in range(start,end+1):
+			r.drawComps(c,pivot3)
+			if ar[c] < ar[pivot3]:
+				below += 1
+		
+		pivot4 = start + below
+		
+		if abs(pivot4 - pivot) < abs(pivot2 - pivot):
+			swap(pivot3,pivot4)
+			pivot2 = pivot4
+		else:
+			swap(pivot,pivot2)
+			
+	else:
+		swap(pivot,pivot2)
+	#r.drawDone(pivot2)
+	#pygame.display.update()
+	
+	n = pivot2 + 1
+	c = start
+	while c < pivot2:
+		r.drawComps(c,pivot2)
+		if ar[c] > ar[pivot2]:
+			r.drawComps(n,pivot2)
+			while ar[n] > ar[pivot2]:
+				n += 1
+			swap(c,n)
+			n += 1
+			if n > end:
+				break
+		c += 1
+	
+	r.drawDone(pivot2)
+	pygame.display.update()
+		
+	quickSortBestOf3Pivot(start,pivot2-1)
+	quickSortBestOf3Pivot(pivot2+1,end)
+	
+def quickSortRandomPivot(start=0,end=None):
+	if end == None:
+		end = listLen - 1;
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	pivot = random.randint(start,end)
+	
+	below = 0
+	for c in range(start,end+1):
+		r.drawComps(c,pivot)
+		if ar[c] < ar[pivot]:
+			below += 1
+	pivot2 = start + below
+	swap(pivot,pivot2)
+	#r.drawDone(pivot2)
+	#pygame.display.update()
+	
+	n = pivot2 + 1
+	c = start
+	while c < pivot2:
+		r.drawComps(c,pivot2)
+		if ar[c] > ar[pivot2]:
+			r.drawComps(n,pivot2)
+			while ar[n] > ar[pivot2]:
+				n += 1
+			swap(c,n)
+			n += 1
+			if n > end:
+				break
+		c += 1
+	
+	r.drawDone(pivot2)
+	pygame.display.update()
+		
+	quickSortRandomPivot(start,pivot2-1)
+	quickSortRandomPivot(pivot2+1,end)
+	
+def quickCombSortMiddlePivot(combStrength=2, start=0, end=None):
+	if end == None:
+		end = listLen - 1;
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	combRange(start, end, 1.3, combStrength)
+	
+	pivot = math.floor((start+end)/2)
+	
+	below = 0
+	for c in range(start,end+1):
+		r.drawComps(c,pivot)
+		if ar[c] < ar[pivot]:
+			below += 1
+	pivot2 = start + below
+	swap(pivot,pivot2)
+	#r.drawDone(pivot2)
+	#pygame.display.update()
+	
+	n = pivot2 + 1
+	c = start
+	while c < pivot2:
+		r.drawComps(c,pivot2)
+		if ar[c] > ar[pivot2]:
+			r.drawComps(n,pivot2)
+			while ar[n] > ar[pivot2]:
+				n += 1
+			swap(c,n)
+			n += 1
+			if n > end:
+				break
+		c += 1
+	
+	r.drawDone(pivot2)
+	pygame.display.update()
+		
+	quickCombSortMiddlePivot(combStrength,start,pivot2-1)
+	quickCombSortMiddlePivot(combStrength,pivot2+1,end)
 
 def shuffleSort():
 	global ar
@@ -1595,6 +1938,26 @@ def comb(gapFactor=1.3,stopGapFactor=5):
 	
 	while gap >= stopGap:
 		for c in range(listLen-gap):
+			r.drawComps(c,c+gap)
+			if ar[c] > ar[c+gap]:
+				swap(c,c+gap)
+		currentGapFactor *= gapFactor
+		gap=round(gapStart/currentGapFactor)
+
+def combRange(start=0, end=None, gapFactor=1.3, stopGapFactor=5):
+	global ar
+	global listLen
+	
+	if end == None:
+		end = listLen - 1
+	
+	gapStart = end - start
+	gap = gapStart
+	currentGapFactor = 1
+	stopGap = max(1, gapStart / stopGapFactor)
+	
+	while gap >= stopGap:
+		for c in range(start,end-gap+1):
 			r.drawComps(c,c+gap)
 			if ar[c] > ar[c+gap]:
 				swap(c,c+gap)

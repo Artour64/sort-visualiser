@@ -41,10 +41,17 @@ pygame.time.wait(1000)
 #s.bubbleFlipSort()
 #s.bubbleFlipExchangeSort()
 
-#s.comb(1.3,50)
+#s.comb(1.3,5)
 
 #s.heapSort()
-s.adaptiveHeapSort()
+#s.adaptiveHeapSort()
+
+#s.quickSortMiddlePivot()
+#s.quickCombSortMiddlePivot(2)
+#s.quickSortMedian3Pivot()
+s.quickCombSortMedian3Pivot(3)
+#s.quickSortBestOf3Pivot()
+#s.quickSortRandomPivot()
 
 #s.bigbubblesort()
 #s.bigbubbleExchangesort()
