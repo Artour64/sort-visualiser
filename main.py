@@ -48,8 +48,8 @@ pygame.time.wait(1000)
 
 #s.quickSortMiddlePivot()
 #s.quickCombSortMiddlePivot(2)
-#s.quickSortMedian3Pivot()
-s.quickCombSortMedian3Pivot(3)
+s.quickSortMedian3Pivot()
+#s.quickCombSortMedian3Pivot(3)
 #s.quickSortBestOf3Pivot()
 #s.quickSortRandomPivot()
 

@@ -273,7 +273,7 @@ def quickSortMedian3Pivot(start=0,end=None):
 	sort3(pivot-1,pivot,pivot+1)
 	if end - start == 2:
 		r.drawDone(start)
-		r.drawDone(start+1)
+		r.drawDone(pivot)
 		r.drawDone(end)
 		pygame.display.update()
 		return
@@ -332,7 +332,7 @@ def quickCombSortMedian3Pivot(combStrength=2, start=0, end=None):
 	sort3(pivot-1,pivot,pivot+1)
 	if end - start == 2:
 		r.drawDone(start)
-		r.drawDone(start+1)
+		r.drawDone(pivot)
 		r.drawDone(end)
 		pygame.display.update()
 		return
@@ -389,7 +389,7 @@ def quickSortBestOf3Pivot(start=0,end=None):
 	sort3(pivot-1,pivot,pivot+1)
 	if end - start == 2:
 		r.drawDone(start)
-		r.drawDone(start+1)
+		r.drawDone(pivot)
 		r.drawDone(end)
 		pygame.display.update()
 		return

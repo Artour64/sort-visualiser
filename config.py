@@ -1,6 +1,6 @@
 delay=0
 #delay=10
-#delay=20
+delay=20
 #delay=100
 
 listLen=2000
