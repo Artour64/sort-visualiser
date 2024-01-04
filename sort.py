@@ -16,7 +16,14 @@ def swap(a,b):
 	ar[a]=ar[b]
 	ar[b]=temp
 	r.drawWrites(a,b)
-	
+
+def sort2(i1,i2):
+	global ar
+	r.drawComps(i1,i2)
+	if ar[i1] > ar[i2]:
+		swap(i1,i2);
+		
+
 def sort3(i1,i2,i3):
 	global ar
 	r.drawComps(i1,i2)
@@ -47,6 +54,35 @@ def sort3(i1,i2,i3):
 				ar[i2]=ar[i3]
 				ar[i3]=temp
 				r.drawWrites(i1,i2,i3)
+
+def sortInd(*ind):
+	global ar
+	
+	l = len(ind)
+	
+	if l >= 3:
+		sort3(ind[0],ind[1],ind[2])
+		if l == 3:
+			return
+	elif l == 2:
+		sort2(ind[0],ind[1])
+	elif l < 2:
+		return
+	
+	for c in range(3,l):
+		temp=ar[ind[c]]
+		endInd=0
+		for i in range(c):
+			r.drawComps(ind[c-i-1])
+			if ar[ind[c-i-1]] > temp:
+				ar[ind[c-i]] = ar[ind[c-i-1]]
+				r.drawWrites(ind[c-i])
+			else:
+				endInd=c-i
+				break
+		ar[ind[endInd]] = temp
+		r.drawWrites(ind[endInd])
+
 
 def randInd():
 	global listLen
@@ -205,6 +241,114 @@ def adaptiveHeapSort():
 	sortReverseBackwards()
 	heapSort()
 
+def medianOfMedians3(start=0, end=None):
+	if end == None:
+		end = listLen - 1;
+	
+	i1 = 0
+	i2 = 1
+	i3 = 2
+	#mult = 1
+	p = 3#pow(3,mult)
+	pp = 1
+	end2 =end
+	
+	while p <= end - start + 1:
+		end = end2
+		for c in range(math.floor((end-start+1)/p)):
+			cp = start+(c*p)
+			end2 = cp+i3
+			sort3(cp+i1, cp+i2, end2)
+			#print(end)
+			
+		i1 += pp
+		i2 += p
+		i3 = i2+p
+		#mult += 1
+		pp = p
+		p *= 3
+	
+	p = pp
+	pp = int(pp/3)
+	
+	i2 += start
+	i2 -= p
+	
+	i5 = i2+p
+	if end < i5:
+		return i2
+
+	i1 += start
+	i1 -= pp
+	i3 = i2+pp
+	i4 = i1+p
+	i6 = i3+p
+	if end < i6:
+		sortInd(i1,i2,i3,i4,i5)
+		return i3
+	
+	i7 = i4+p
+	if end < i7:
+		sortInd(i1,i2,i3,i4,i5,i6)
+		return i3
+	
+	i8 = i5+p
+	if end < i8:
+		sortInd(i1,i2,i3,i4,i5,i6,i7)
+		return i4
+		
+	sortInd(i1,i2,i3,i4,i5,i6,i7,i8)
+	return i4
+
+
+def quickSortMedianOfMediansPivot(start=0,end=None):
+	if end == None:
+		end = listLen - 1;
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	pivot = medianOfMedians3(start,end)
+	
+	below = 0
+	for c in range(start,end+1):
+		r.drawComps(c,pivot)
+		if ar[c] < ar[pivot]:
+			below += 1
+	pivot2 = start + below
+	swap(pivot,pivot2)
+	#r.drawDone(pivot2)
+	#pygame.display.update()
+	
+	n = pivot2 + 1
+	c = start
+	while c < pivot2:
+		r.drawComps(c,pivot2)
+		if ar[c] > ar[pivot2]:
+			r.drawComps(n,pivot2)
+			while ar[n] > ar[pivot2]:
+				n += 1
+			swap(c,n)
+			n += 1
+			if n > end:
+				break
+		c += 1
+	
+	r.drawDone(pivot2)
+	pygame.display.update()
+		
+	quickSortMedianOfMediansPivot(start,pivot2-1)
+	quickSortMedianOfMediansPivot(pivot2+1,end)
+
 def quickSortMiddlePivot(start=0,end=None):
 	if end == None:
 		end = listLen - 1;
@@ -308,6 +452,191 @@ def quickSortMedian3Pivot(start=0,end=None):
 	quickSortMedian3Pivot(start,pivot2-1)
 	quickSortMedian3Pivot(pivot2+1,end)
 
+
+def quickSortLRMedian3Pivot(start=0,end=None):
+	if end == None:
+		end = listLen - 1;
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	pivot = math.floor((start+end)/2)
+	sort3(pivot-1,pivot,pivot+1)
+	if end - start == 2:
+		r.drawDone(start)
+		r.drawDone(pivot)
+		r.drawDone(end)
+		pygame.display.update()
+		return
+	
+	r.drawComps(pivot)
+	p = ar[pivot]
+	l = start
+	ri = end
+	
+	while ri > l:
+		#print("L: "+l)
+		if ar[l] >= p:
+			r.drawComps(l)
+		else:
+			while ar[l] < p and ri > l:
+				r.drawComps(l)
+				l += 1
+			if ri <= l:
+				break
+		
+		if ar[ri] <= p:
+			r.drawComps(ri)
+		else:
+			while ar[ri] > p and ri > l:
+				r.drawComps(ri)
+				ri -= 1
+			if ri <= l:
+				break
+
+		if ar[l] == ar[ri]:
+			l += 1
+			#ri -= 1
+		else:
+			swap(l,ri)
+		
+	
+	r.drawDone(l)
+	pygame.display.update()
+		
+	quickSortLRMedian3Pivot(start,l-1)
+	quickSortLRMedian3Pivot(l+1,end)
+	
+	
+def quickSortLRMedianOfMediansPivot(start=0,end=None):
+	if end == None:
+		end = listLen - 1;
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	pivot = medianOfMedians3(start,end)
+	
+	r.drawComps(pivot)
+	p = ar[pivot]
+	l = start
+	ri = end
+	
+	while ri > l:
+		#print("L: "+l)
+		if ar[l] >= p:
+			r.drawComps(l)
+		else:
+			while ar[l] < p and ri > l:
+				r.drawComps(l)
+				l += 1
+			if ri <= l:
+				break
+		
+		if ar[ri] <= p:
+			r.drawComps(ri)
+		else:
+			while ar[ri] > p and ri > l:
+				r.drawComps(ri)
+				ri -= 1
+			if ri <= l:
+				break
+
+		if ar[l] == ar[ri]:
+			l += 1
+			#ri -= 1
+		else:
+			swap(l,ri)
+		
+	
+	r.drawDone(l)
+	pygame.display.update()
+		
+	quickSortLRMedianOfMediansPivot(start,l-1)
+	quickSortLRMedianOfMediansPivot(l+1,end)
+
+def quickSortMedianQuickSortMiddleMedianPivot(factor=5, start=0, end=None, markDone=True):
+	if end == None:
+		end = listLen - 1;
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			if markDone:
+				r.drawDone(start)
+				r.drawDone(end)
+				pygame.display.update()
+		elif markDone and start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	pivot = math.floor((start+end)/2)
+	
+	if end - start == 2:
+		sort3(pivot-1,pivot,pivot+1)
+		if markDone:
+			r.drawDone(start)
+			r.drawDone(pivot)
+			r.drawDone(end)
+			pygame.display.update()
+		return
+	
+	size = end - start + 1
+	medianPoolSize = math.floor(size / factor)
+	medianPoolStart = start + math.floor((size - medianPoolSize)/2)
+	medianPoolEnd = medianPoolStart + medianPoolSize - 1
+	
+	quickSortMedianQuickSortMiddleMedianPivot(factor, medianPoolStart, medianPoolEnd, False)
+	
+	
+	below = 0
+	for c in range(start,end+1):
+		r.drawComps(c,pivot)
+		if ar[c] < ar[pivot]:
+			below += 1
+	pivot2 = start + below
+	swap(pivot,pivot2)
+	
+	n = pivot2 + 1
+	c = start
+	while c < pivot2:
+		r.drawComps(c,pivot2)
+		if ar[c] > ar[pivot2]:
+			r.drawComps(n,pivot2)
+			while ar[n] > ar[pivot2]:
+				n += 1
+			swap(c,n)
+			n += 1
+			if n > end:
+				break
+		c += 1
+	
+	if markDone:
+		r.drawDone(pivot2)
+		pygame.display.update()
+		
+	quickSortMedianQuickSortMiddleMedianPivot(factor, start, pivot2-1, markDone)
+	quickSortMedianQuickSortMiddleMedianPivot(factor, pivot2+1, end, markDone)
 
 def quickCocktailShakerSortMedian3Pivot(start=0,end=None):
 	if end == None:
@@ -2181,6 +2510,20 @@ def combSort():
 				swap(c,c+gap)
 		gap=int(gap/gapFactor)
 	bubbleSort()
+
+def combCocktailShakerSort():
+	gapFactor=1.3
+	
+	global ar
+	global listLen
+	gap=listLen-1
+	while gap > 1:
+		for c in range(listLen-gap):
+			r.drawComps(c,c+gap)
+			if ar[c] > ar[c+gap]:
+				swap(c,c+gap)
+		gap=int(gap/gapFactor)
+	cocktailShakerSort()
 	
 def triswapCombSort():
 	gapFactor=1.3

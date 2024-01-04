@@ -43,7 +43,7 @@ pygame.time.wait(1000)
 
 
 #s.randSortSwaps(2000)
-s.comb(1.3,10)
+#s.comb(1.3,5)
 
 #s.cocktailShakerPassSort()
 
@@ -52,12 +52,17 @@ s.comb(1.3,10)
 
 #s.quickSortMiddlePivot()
 #s.quickCombSortMiddlePivot(2)
-s.quickSortMedian3Pivot()
+#s.quickSortMedian3Pivot()
 #s.quickCombSortMedian3Pivot(3)
 #s.quickCocktailShakerSortMedian3Pivot()
 #s.quickCombCocktailShakerSortMedian3Pivot(2)
 #s.quickSortBestOf3Pivot()
 #s.quickSortRandomPivot()
+#s.quickSortMedianQuickSortMiddleMedianPivot(20)
+#s.quickSortMedianOfMediansPivot()
+
+#s.quickSortLRMedian3Pivot()
+s.quickSortLRMedianOfMediansPivot()
 
 #s.bigbubblesort()
 #s.bigbubbleExchangesort()
@@ -89,6 +94,7 @@ s.quickSortMedian3Pivot()
 #s.bigbubbleShellsort()
 #s.megabubbleShellsort()
 #s.combSort()
+#s.combCocktailShakerSort()
 #s.triswapCombSort()
 
 print("done")
