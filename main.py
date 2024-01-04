@@ -41,7 +41,11 @@ pygame.time.wait(1000)
 #s.bubbleFlipSort()
 #s.bubbleFlipExchangeSort()
 
-#s.comb(1.3,5)
+
+#s.randSortSwaps(2000)
+s.comb(1.3,10)
+
+#s.cocktailShakerPassSort()
 
 #s.heapSort()
 #s.adaptiveHeapSort()
@@ -50,6 +54,8 @@ pygame.time.wait(1000)
 #s.quickCombSortMiddlePivot(2)
 s.quickSortMedian3Pivot()
 #s.quickCombSortMedian3Pivot(3)
+#s.quickCocktailShakerSortMedian3Pivot()
+#s.quickCombCocktailShakerSortMedian3Pivot(2)
 #s.quickSortBestOf3Pivot()
 #s.quickSortRandomPivot()
 

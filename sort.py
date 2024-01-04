@@ -309,6 +309,149 @@ def quickSortMedian3Pivot(start=0,end=None):
 	quickSortMedian3Pivot(pivot2+1,end)
 
 
+def quickCocktailShakerSortMedian3Pivot(start=0,end=None):
+	if end == None:
+		end = listLen - 1;
+	
+	if end - start > 2:
+		
+		#help the cocktail shaker get more than one index reduction more often
+		sort3(start,start+1,start+2)
+		sort3(end-2,end-1,end)
+	
+		#maybe combine it with the below calc loop, and maybe with the best of 3 retry
+		ret = cocktailShakerPass(start,end+1)
+		start = ret[0]
+		end = ret[1] - 1
+	
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	
+	pivot = math.floor((start+end)/2)
+	sort3(pivot-1,pivot,pivot+1)
+	if end - start == 2:
+		r.drawDone(start)
+		r.drawDone(pivot)
+		r.drawDone(end)
+		pygame.display.update()
+		return
+	
+	
+	
+	below = 0
+	for c in range(start,end+1):
+		r.drawComps(c,pivot)
+		if ar[c] < ar[pivot]:
+			below += 1
+	pivot2 = start + below
+	swap(pivot,pivot2)
+	#r.drawDone(pivot2)
+	#pygame.display.update()
+	
+	n = pivot2 + 1
+	c = start
+	while c < pivot2:
+		r.drawComps(c,pivot2)
+		if ar[c] > ar[pivot2]:
+			r.drawComps(n,pivot2)
+			while ar[n] > ar[pivot2]:
+				n += 1
+			swap(c,n)
+			n += 1
+			if n > end:
+				break
+		c += 1
+	
+	r.drawDone(pivot2)
+	pygame.display.update()
+		
+	quickCocktailShakerSortMedian3Pivot(start,pivot2-1)
+	quickCocktailShakerSortMedian3Pivot(pivot2+1,end)
+
+
+def quickCombCocktailShakerSortMedian3Pivot(combStrength=2,start=0,end=None):
+	if end == None:
+		end = listLen - 1;
+	
+	if end - start > 2:
+		combRange(start, end, 1.3, combStrength)
+		
+		#help the cocktail shaker get more than one index reduction more often
+		sort3(start,start+1,start+2)
+		sort3(end-2,end-1,end)
+		
+		#maybe combine it with the below calc loop, and maybe with the best of 3 retry
+		ret = cocktailShakerPass(start,end+1)
+		start = ret[0]
+		end = ret[1] - 1
+	
+	if end - start < 2:
+		if end - start == 1:
+			r.drawComps(start,end)
+			if ar[start] > ar[end]:
+				swap(start,end)
+			r.drawDone(start)
+			r.drawDone(end)
+			pygame.display.update()
+		elif start == end:
+			r.drawDone(start)
+			pygame.display.update()
+		return
+	
+	
+	pivot = math.floor((start+end)/2)
+	sort3(pivot-1,pivot,pivot+1)
+	if end - start == 2:
+		r.drawDone(start)
+		r.drawDone(pivot)
+		r.drawDone(end)
+		pygame.display.update()
+		return
+	
+	
+	
+	below = 0
+	for c in range(start,end+1):
+		r.drawComps(c,pivot)
+		if ar[c] < ar[pivot]:
+			below += 1
+	pivot2 = start + below
+	swap(pivot,pivot2)
+	#r.drawDone(pivot2)
+	#pygame.display.update()
+	
+	n = pivot2 + 1
+	c = start
+	while c < pivot2:
+		r.drawComps(c,pivot2)
+		if ar[c] > ar[pivot2]:
+			r.drawComps(n,pivot2)
+			while ar[n] > ar[pivot2]:
+				n += 1
+			swap(c,n)
+			n += 1
+			if n > end:
+				break
+		c += 1
+	
+	r.drawDone(pivot2)
+	pygame.display.update()
+		
+	quickCombCocktailShakerSortMedian3Pivot(combStrength,start,pivot2-1)
+	quickCombCocktailShakerSortMedian3Pivot(combStrength,pivot2+1,end)
+
+
 def quickCombSortMedian3Pivot(combStrength=2, start=0, end=None):
 	if end == None:
 		end = listLen - 1;
@@ -1889,6 +2032,66 @@ def bubbleExchangePullSort():#sometimes wrong at the end
 		r.drawDone(c)
 	pygame.display.update()
 
+
+#made for testing purposes
+def cocktailShakerPassSort(start=0, end=None):
+	global ar
+	global listLen
+	
+	if end == None:
+		end = listLen
+		
+	while end - start > 0:
+		ret = cocktailShakerPass(start,end)
+		start = ret[0]
+		end = ret[1]
+		
+def cocktailShakerPass(start=0, end=None, markDone=True):
+	global ar
+	global listLen
+	
+	if end == None:
+		end = listLen
+	
+	if end - start < 2:
+		if markDone and end - start == 1:
+			r.drawDone(start)
+			pygame.display.update()
+		return [start,start]
+	
+	lastSwap=start
+	
+	for c in range(start,end-1):
+		r.drawComps(c,c+1)
+		if ar[c] > ar[c+1]:
+			swap(c,c+1)
+			lastSwap=c
+	
+	ret = [start,lastSwap+1]
+	
+	if markDone:
+		for c in range(lastSwap+1,end):
+			r.drawDone(c)
+		pygame.display.update()
+	
+	if lastSwap - start > 0:
+		for c in reversed(range(start,lastSwap)):
+			r.drawComps(c,c+1)
+			if ar[c] > ar[c+1]:
+				swap(c,c+1)
+				lastSwap=c+1
+		
+		ret[0] = lastSwap
+		
+		if markDone:
+			for c in range(start,lastSwap):
+				r.drawDone(c)
+			pygame.display.update()
+	
+	#print(listLen)
+	#print(ret)
+	
+	return ret
 	
 def cocktailShakerSort():
 	global ar
