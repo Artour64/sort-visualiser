@@ -377,12 +377,14 @@ def heapSort2():
 
 	
 def heapSort3():
+	#same as heapSort2 but with insertion optimization for both heap construction and poping
 	global ar
 	global listLen
 	
+	#make heap, Floyd's improved heap-construction algorithm with insertion optimization
 	heapify3()
 	
-	#pop heap
+	#pop heap, with insertion optimization
 	for c in reversed(range(1,listLen)):
 		
 		r.drawComps(c)
@@ -427,7 +429,7 @@ def adaptiveHeapSort():
 	sortReverse()
 	comb(1.3,2)
 	sortReverseBackwards()
-	heapSort2()
+	heapSort3()
 
 def medianOfMedians3(start=0, end=None):
 	if end == None:
