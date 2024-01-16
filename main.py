@@ -51,6 +51,7 @@ pygame.time.wait(1000)
 
 #s.heapRuns()
 #s.heapRuns2()
+#s.heapRuns3()
 #s.sortRuns()
 #s.sortRunsInversions()
 #pygame.time.wait(1000)

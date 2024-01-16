@@ -247,43 +247,22 @@ def heapify3():
 				break
 
 def heapRuns():
-	global ar
-	global listLen
-	global arAux
-	global arAux2
-	
 	heapify()
-	
-	n = 0;
-	
-	for c in range(listLen):
-		arAux2[c] = False
-	
-	for c in range(listLen):
-		if arAux2[c]:
-			continue
-		i = c
-		while i < listLen:
-			r.drawComps(i)
-			arAux[n] = ar[i]
-			arAux2[i] = True
-			n += 1
-			i = (i*2) + 1
-	
-	for c in range(listLen):
-		ar[c] = arAux[c]
-		r.drawWrites(c)
-		
-	reverse()
-	
+	runsFromHeap()
 
 def heapRuns2():
+	heapify2()
+	runsFromHeap()
+
+def heapRuns3():
+	heapify3()
+	runsFromHeap()
+
+def runsFromHeap():
 	global ar
 	global listLen
 	global arAux
 	global arAux2
-	
-	heapify2()
 	
 	n = 0;
 	
@@ -306,7 +285,6 @@ def heapRuns2():
 		r.drawWrites(c)
 		
 	reverse()
-	
 
 def heapSort():
 	global ar
