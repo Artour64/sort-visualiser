@@ -7,22 +7,31 @@ import render as r
 
 listLen=co.listLen
 
+slowSwap = co.slowSwap
+
 arAux=list(range(listLen))
 arAux2=list(range(listLen))
 	
 def swap(a,b):
 	global ar
+	
+	if slowSwap:
+		r.drawComps(a)
+		
 	temp=ar[a]
 	ar[a]=ar[b]
 	ar[b]=temp
-	r.drawWrites(a,b)
+	if slowSwap:
+		r.drawWrites(a)
+		r.drawWrites(b)
+	else:
+		r.drawWrites(a,b)
 
 def sort2(i1,i2):
 	global ar
 	r.drawComps(i1,i2)
 	if ar[i1] > ar[i2]:
 		swap(i1,i2);
-		
 
 def sort3(i1,i2,i3):
 	global ar
@@ -34,11 +43,18 @@ def sort3(i1,i2,i3):
 			if ar[i1] < ar[i3]:
 				swap(i2,i3)
 			else:
+				if slowSwap:
+					r.drawComps(i3)
 				temp=ar[i3]
 				ar[i3]=ar[i2]
 				ar[i2]=ar[i1]
 				ar[i1]=temp
-				r.drawWrites(i1,i2,i3)
+				if slowSwap:
+					r.drawWrites(i3)
+					r.drawWrites(i2)
+					r.drawWrites(i1)
+				else:
+					r.drawWrites(i3,i2,i1)
 		#else: in order
 	else:
 		r.drawComps(i2,i3)
@@ -49,11 +65,18 @@ def sort3(i1,i2,i3):
 			if ar[i1] < ar[i3]:
 				swap(i1,i2)
 			else:
+				if slowSwap:
+					r.drawComps(i1)
 				temp=ar[i1]
 				ar[i1]=ar[i2]
 				ar[i2]=ar[i3]
 				ar[i3]=temp
-				r.drawWrites(i1,i2,i3)
+				if slowSwap:
+					r.drawWrites(i1)
+					r.drawWrites(i2)
+					r.drawWrites(i3)
+				else:
+					r.drawWrites(i1,i2,i3)
 
 def sortInd(*ind):
 	global ar
@@ -151,13 +174,11 @@ def checkSorted():
 			return False
 	return True
 
-def heapRuns():
+
+def heapify():
 	global ar
 	global listLen
-	global arAux
-	global arAux2
-	
-	#make heap
+
 	for c in range(1,listLen):
 		i = c
 		while i > 0:
@@ -168,6 +189,70 @@ def heapRuns():
 				i = p
 			else:
 				break
+
+def heapify2():
+	#Floyd's improved heap-construction algorithm
+	#lastEl = listLen - 1
+	#parent = math.floor((lastEl - 1)/2)
+	#loopTo = parent + 1
+	
+	#loopTo = math.floor((listLen - 1 - 1)/2) + 1
+	#loopTo = math.floor(listLen/2)
+	
+	for c in reversed(range(0,math.floor(listLen/2))):
+		i = c
+		while i < listLen:
+			bigChild = (i*2) + 1
+			if bigChild >= listLen:
+				break
+			if bigChild + 1 < listLen:
+				r.drawComps(bigChild,bigChild+1)
+				if ar[bigChild] < ar[bigChild + 1]:
+					bigChild += 1
+			r.drawComps(i,bigChild)
+			if ar[bigChild] > ar[i]:
+				swap(i,bigChild)
+				i = bigChild
+			else:
+				break
+
+def heapify3():
+	#Floyd's improved heap-construction algorithm
+	#insertion optimization (faster than swaps)
+	
+	for c in reversed(range(0,math.floor(listLen/2))):
+		i = c
+		
+		r.drawComps(i)
+		temp = ar[i]
+		
+		while i < listLen:
+			bigChild = (i*2) + 1
+			if bigChild >= listLen:
+				ar[i] = temp
+				r.drawWrites(i)
+				break
+			if bigChild + 1 < listLen:
+				r.drawComps(bigChild,bigChild+1)
+				if ar[bigChild] < ar[bigChild + 1]:
+					bigChild += 1
+			r.drawComps(bigChild)
+			if ar[bigChild] > temp:
+				ar[i] = ar[bigChild]
+				r.drawWrites(i)
+				i = bigChild
+			else:
+				ar[i] = temp
+				r.drawWrites(i)
+				break
+
+def heapRuns():
+	global ar
+	global listLen
+	global arAux
+	global arAux2
+	
+	heapify()
 	
 	n = 0;
 	
@@ -191,23 +276,43 @@ def heapRuns():
 		
 	reverse()
 	
+
+def heapRuns2():
+	global ar
+	global listLen
+	global arAux
+	global arAux2
+	
+	heapify2()
+	
+	n = 0;
+	
+	for c in range(listLen):
+		arAux2[c] = False
+	
+	for c in range(listLen):
+		if arAux2[c]:
+			continue
+		i = c
+		while i < listLen:
+			r.drawComps(i)
+			arAux[n] = ar[i]
+			arAux2[i] = True
+			n += 1
+			i = (i*2) + 1
+	
+	for c in range(listLen):
+		ar[c] = arAux[c]
+		r.drawWrites(c)
+		
+	reverse()
 	
 
 def heapSort():
 	global ar
 	global listLen
 	
-	#make heap
-	for c in range(1,listLen):
-		i = c
-		while i > 0:
-			p = math.floor((i-1) / 2)
-			r.drawComps(i,p)
-			if ar[p] < ar[i]:
-				swap(i,p)
-				i = p
-			else:
-				break
+	heapify()
 	
 	#pop heap
 	for c in reversed(range(1,listLen)):
@@ -234,12 +339,95 @@ def heapSort():
 	if listLen > 0:	
 		r.drawDone(0)
 		pygame.display.update()
+
+
+def heapSort2():
+	global ar
+	global listLen
+	
+	#make heap, Floyd's improved heap-construction algorithm
+	heapify2()
+	
+	#pop heap
+	for c in reversed(range(1,listLen)):
+		swap(0,c)
+		r.drawDone(c)
+		pygame.display.update()
+		i = 0
+		while i < c:
+			bigChild = (i*2) + 1
+			if bigChild >= c:
+				break
+			if bigChild + 1 < c:
+				r.drawComps(bigChild,bigChild+1)
+				if ar[bigChild] < ar[bigChild + 1]:
+					bigChild += 1
+			r.drawComps(i,bigChild)
+			if ar[bigChild] > ar[i]:
+				swap(i,bigChild)
+				i = bigChild
+			else:
+				break
+	
+	#last element mark
+	if listLen > 0:	
+		r.drawDone(0)
+		pygame.display.update()
+
+
+	
+def heapSort3():
+	global ar
+	global listLen
+	
+	heapify3()
+	
+	#pop heap
+	for c in reversed(range(1,listLen)):
+		
+		r.drawComps(c)
+		temp = ar[c]
+		
+		ar[c] = ar[0]
+		r.drawWrites(c)
+		
+		r.drawDone(c)
+		pygame.display.update()
+		
+		i = 0
+		
+		while i < c:
+			bigChild = (i*2) + 1
+			if bigChild >= c:
+				ar[i] = temp
+				r.drawWrites(i)
+				break
+			if bigChild + 1 < c:
+				r.drawComps(bigChild,bigChild+1)
+				if ar[bigChild] < ar[bigChild + 1]:
+					bigChild += 1
+			r.drawComps(bigChild)
+			if ar[bigChild] > temp:
+				ar[i] = ar[bigChild]
+				r.drawWrites(i)
+				i = bigChild
+			else:
+				ar[i] = temp
+				r.drawWrites(i)
+				break
+	
+	#last element mark
+	if listLen > 0:	
+		r.drawDone(0)
+		pygame.display.update()
+
+	
 	
 def adaptiveHeapSort():
 	sortReverse()
 	comb(1.3,2)
 	sortReverseBackwards()
-	heapSort()
+	heapSort2()
 
 def medianOfMedians3(start=0, end=None):
 	if end == None:
@@ -2569,6 +2757,7 @@ def insertionSort(topInd=-1):
 	if topInd == -1:
 		topInd=listLen
 	for c in range(1,topInd):
+		r.drawComps(c)
 		temp=ar[c]
 		endInd=0
 		for i in range(c):
@@ -2592,6 +2781,7 @@ def shellsort():
 	gap=listLen-1
 	while gap > 1:
 		for c in range(gap,listLen):
+			r.drawComps(c)
 			temp=ar[c]
 			endInd=c%gap
 			for i in range(int(c/gap)):
@@ -2620,6 +2810,7 @@ def shellsort2():
 	
 	while gap > 1:
 		for c in range(gap,listLen):
+			r.drawComps(c)
 			temp=ar[c]
 			endInd=c%gap
 			for i in range(int(c/gap)):
@@ -2655,6 +2846,7 @@ def shellsort23():
 	
 	while gap > 1:
 		for c in range(gap,listLen):
+			r.drawComps(c)
 			temp=ar[c]
 			endInd=c%gap
 			for i in range(int(c/gap)):

@@ -13,6 +13,23 @@ s.ar=ar
 r.drawAr()
 pygame.time.wait(1000)
 
+
+#sort tester
+'''
+count = 0
+while s.checkSorted():
+	s.shuffle()
+	
+	#sort to test
+	s.heapSort2()
+	
+	count+=1
+	print(count)
+print("problem")
+exit()
+#'''
+
+
 s.shuffle()
 
 #pygame.time.wait(500)
@@ -25,11 +42,20 @@ s.shuffle()
 
 pygame.time.wait(1000)
 
+#s.randSortSwaps(2000)
+#s.comb(1.3,5)
+
+#s.heapify()
+#s.heapify2()
+#s.heapify3()
+
 #s.heapRuns()
+#s.heapRuns2()
 #s.sortRuns()
 #s.sortRunsInversions()
 #pygame.time.wait(1000)
 #pygame.display.update()
+
 
 #s.selectionSort()
 #s.doubleSelectionSort()
@@ -41,13 +67,11 @@ pygame.time.wait(1000)
 #s.bubbleFlipSort()
 #s.bubbleFlipExchangeSort()
 
-
-#s.randSortSwaps(2000)
-#s.comb(1.3,5)
-
 #s.cocktailShakerPassSort()
 
 #s.heapSort()
+#s.heapSort2()
+s.heapSort3()
 #s.adaptiveHeapSort()
 
 #s.quickSortMiddlePivot()
@@ -62,7 +86,7 @@ pygame.time.wait(1000)
 #s.quickSortMedianOfMediansPivot()
 
 #s.quickSortLRMedian3Pivot()
-s.quickSortLRMedianOfMediansPivot()
+#s.quickSortLRMedianOfMediansPivot()
 
 #s.bigbubblesort()
 #s.bigbubbleExchangesort()
