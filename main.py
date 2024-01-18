@@ -129,5 +129,6 @@ print("done")
 if co.stay:
 	import events as ev
 	while ev.running:
+		pygame.time.wait(10)
 		for event in pygame.event.get():
 			ev.event(event)

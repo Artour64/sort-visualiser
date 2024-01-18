@@ -11,7 +11,8 @@ presets = [
 	[0,200,8],#		3
 	[10,100,16],#	4
 	[20,50,32],#	5
-	[100,20,64]#	6
+	[50,20,64],#	6
+	[100,10,128],#	7
 ]
 
 preset = presets[preset]
@@ -22,14 +23,15 @@ tileSize = preset[2]
 
 #delay=10
 #delay=0
-#listLen=9
+#listLen=199
+#listLen += 1
 #tileSize=64
 
 vis=True;
 #vis=False;#not working properly
 
 stay=True
-#stay=False
+stay=False
 
 slowSwap = True
 slowSwap = False

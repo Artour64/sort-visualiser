@@ -11,7 +11,23 @@ slowSwap = co.slowSwap
 
 arAux=list(range(listLen))
 arAux2=list(range(listLen))
-	
+
+def pauseForKey():
+	pause = True;
+	while pause:
+		pygame.time.wait(10);
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				exit();
+			elif event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_SPACE:
+					pause = False;
+
+def allowExit():
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			exit();
+
 def swap(a,b):
 	global ar
 	
@@ -409,7 +425,7 @@ def adaptiveHeapSort():
 	sortReverseBackwards()
 	heapSort3()
 
-#almost works, makes one small mistake every time it sorts
+
 def auxHeapSort(rev = False):
 	global ar
 	global listLen
@@ -424,6 +440,7 @@ def auxHeapSort(rev = False):
 	for c in range(1,listLen):
 		r.drawComps(c)
 		arAux[c] = ar[c]
+		arAux2[c] = -3#for debug
 	
 	
 	if listLen < 2:
@@ -434,50 +451,52 @@ def auxHeapSort(rev = False):
 	size = 1
 	#size2 = listLen - 1
 	
-	for c in range(listLen):
-		f = listLen-c-1
-		ar[f] = ar[0]
-		r.drawWrites(f)
-		r.drawDone(f)
-		pygame.display.update()
+	#debug1 = True
+	
+	for f in reversed(range(1,listLen)):
+		
+		#if f-size == -1:
+		#	if debug1:
+		#		print(f)
+		#		debug1 = False
+		
+		allowExit()
+		doneEl = ar[0]
 		
 		if arAux2[0] > -1:
-			child = (arAux2[0] * 2) + 1
 			
+			child = (arAux2[0] * 2) + 1
 			
 			ar[0] = arAux[child]
 			r.drawWrites(0)
 			
-			if child < math.floor((listLen-1)/2):
+			if (child * 2) + 1 < listLen:
 				arAux2[0] = child
 			else:
-				arAux2[0] = -2
+				arAux2[0] = -1
 			
 			if child + 1 < listLen:
 				ar[size] = arAux[child+1]
 				r.drawWrites(size)
 				
-				if child + 1 <= math.floor((listLen-1)/2):
-					arAux2[size] = child
+				if (child * 2) + 3 < listLen:
+					arAux2[size] = child + 1
 				else:
-					arAux2[size] = -2
+					arAux2[size] = -1
 				
 				r.drawComps(0,size)
 				if ar[0] < ar[size]:
 					swap(0,size)
-					arAux2[0] += 1
-				else:
-					arAux2[size] += 1
-				
-				#size +=1
+					temp = arAux2[0]
+					arAux2[0] = arAux2[size]
+					arAux2[size] = temp
 			
 			#down
-			
+			r.drawComps(0)
 			temp = ar[0]
 			temp2 = arAux2[0]
 			
 			i = 0
-			
 			while i < size:
 				bigChild = (i * 2) + 1
 				if bigChild >= size:
@@ -505,6 +524,7 @@ def auxHeapSort(rev = False):
 			if child + 1 < listLen:
 				i = size
 				size += 1
+				r.drawComps(i)
 				temp = ar[i]
 				temp2 = arAux2[i]
 				while i > 0:
@@ -523,11 +543,11 @@ def auxHeapSort(rev = False):
 		else:
 			#down
 			size -= 1
+			r.drawComps(size)
 			temp = ar[size]
 			temp2 = arAux2[size]
 			
 			i = 0
-			
 			while i < size:
 				bigChild = (i * 2) + 1
 				if bigChild >= size:
@@ -550,8 +570,15 @@ def auxHeapSort(rev = False):
 					arAux2[i] = temp2
 					r.drawWrites(i)
 					break
-			
-			
+		
+		ar[f] = doneEl
+		r.drawWrites(f)
+		r.drawDone(f)
+		pygame.display.update()
+		
+	if listLen > 0:	
+		r.drawDone(0)
+		pygame.display.update()
 
 def medianOfMedians3(start=0, end=None):
 	if end == None:
