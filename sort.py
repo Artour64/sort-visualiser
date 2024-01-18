@@ -440,7 +440,7 @@ def auxHeapSort(rev = False):
 	for c in range(1,listLen):
 		r.drawComps(c)
 		arAux[c] = ar[c]
-		arAux2[c] = -3#for debug
+		#arAux2[c] = -3#for debug
 	
 	
 	if listLen < 2:
