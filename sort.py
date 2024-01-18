@@ -409,6 +409,150 @@ def adaptiveHeapSort():
 	sortReverseBackwards()
 	heapSort3()
 
+#almost works, makes one small mistake every time it sorts
+def auxHeapSort(rev = False):
+	global ar
+	global listLen
+	global arAux
+	global arAux2
+	
+	if rev:
+		reverse()
+	
+	heapify3()
+	
+	for c in range(1,listLen):
+		r.drawComps(c)
+		arAux[c] = ar[c]
+	
+	
+	if listLen < 2:
+		arAux2[0] = -1
+	else:
+		arAux2[0] = 0
+	
+	size = 1
+	#size2 = listLen - 1
+	
+	for c in range(listLen):
+		f = listLen-c-1
+		ar[f] = ar[0]
+		r.drawWrites(f)
+		r.drawDone(f)
+		pygame.display.update()
+		
+		if arAux2[0] > -1:
+			child = (arAux2[0] * 2) + 1
+			
+			
+			ar[0] = arAux[child]
+			r.drawWrites(0)
+			
+			if child < math.floor((listLen-1)/2):
+				arAux2[0] = child
+			else:
+				arAux2[0] = -2
+			
+			if child + 1 < listLen:
+				ar[size] = arAux[child+1]
+				r.drawWrites(size)
+				
+				if child + 1 <= math.floor((listLen-1)/2):
+					arAux2[size] = child
+				else:
+					arAux2[size] = -2
+				
+				r.drawComps(0,size)
+				if ar[0] < ar[size]:
+					swap(0,size)
+					arAux2[0] += 1
+				else:
+					arAux2[size] += 1
+				
+				#size +=1
+			
+			#down
+			
+			temp = ar[0]
+			temp2 = arAux2[0]
+			
+			i = 0
+			
+			while i < size:
+				bigChild = (i * 2) + 1
+				if bigChild >= size:
+					ar[i] = temp
+					arAux2[i] = temp2
+					r.drawWrites(i)
+					break
+				if bigChild + 1 < size:
+					r.drawComps(bigChild,bigChild+1)
+					if ar[bigChild] < ar[bigChild + 1]:
+						bigChild += 1
+				r.drawComps(bigChild)
+				if ar[bigChild] > temp:
+					ar[i] = ar[bigChild]
+					arAux2[i] = arAux2[bigChild]
+					r.drawWrites(i)
+					i = bigChild
+				else:
+					ar[i] = temp
+					arAux2[i] = temp2
+					r.drawWrites(i)
+					break
+			
+			#up
+			if child + 1 < listLen:
+				i = size
+				size += 1
+				temp = ar[i]
+				temp2 = arAux2[i]
+				while i > 0:
+					p = math.floor((i-1) / 2)
+					r.drawComps(i,p)
+					if ar[p] < temp:
+						ar[i] = ar[p]
+						arAux2[i] = arAux2[p]
+						r.drawWrites(i)
+						i = p
+					else:
+						break
+				ar[i] = temp
+				arAux2[i] = temp2
+				r.drawWrites(i)
+		else:
+			#down
+			size -= 1
+			temp = ar[size]
+			temp2 = arAux2[size]
+			
+			i = 0
+			
+			while i < size:
+				bigChild = (i * 2) + 1
+				if bigChild >= size:
+					ar[i] = temp
+					arAux2[i] = temp2
+					r.drawWrites(i)
+					break
+				if bigChild + 1 < size:
+					r.drawComps(bigChild,bigChild+1)
+					if ar[bigChild] < ar[bigChild + 1]:
+						bigChild += 1
+				r.drawComps(bigChild)
+				if ar[bigChild] > temp:
+					ar[i] = ar[bigChild]
+					arAux2[i] = arAux2[bigChild]
+					r.drawWrites(i)
+					i = bigChild
+				else:
+					ar[i] = temp
+					arAux2[i] = temp2
+					r.drawWrites(i)
+					break
+			
+			
+
 def medianOfMedians3(start=0, end=None):
 	if end == None:
 		end = listLen - 1;

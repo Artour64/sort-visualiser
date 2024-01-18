@@ -72,8 +72,10 @@ pygame.time.wait(1000)
 
 #s.heapSort()
 #s.heapSort2()
-s.heapSort3()
+#s.heapSort3()
 #s.adaptiveHeapSort()
+
+s.auxHeapSort()
 
 #s.quickSortMiddlePivot()
 #s.quickCombSortMiddlePivot(2)

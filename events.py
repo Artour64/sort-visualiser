@@ -6,11 +6,11 @@ def event(event):
 		global running
 		running = False
 	# key control
-	if event.type == pygame.KEYDOWN:
-		if event.key == pygame.K_SPACE:#regen map
-			pass
-		elif event.key == pygame.K_RETURN:
-			pass
+	#if event.type == pygame.KEYDOWN:
+	#	if event.key == pygame.K_SPACE:#regen map
+	#		pass
+	#	elif event.key == pygame.K_RETURN:
+	#		pass
 		
 	#if event.type == pygame.KEYUP:
 	#	pass

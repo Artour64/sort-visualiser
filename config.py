@@ -29,7 +29,7 @@ vis=True;
 #vis=False;#not working properly
 
 stay=True
-stay=False
+#stay=False
 
 slowSwap = True
 slowSwap = False
